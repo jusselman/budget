@@ -105,20 +105,18 @@ var budgetController = (function() {
     },
 
     calculatePercentages: function() {
-
       data.allItems.exp.forEach(function(cur) {
         cur.calcPercentage(data.totals.inc);
       });
-
     },
 
     getPercentages: function() {
-        var allPerc = data.allItems.exp.map(function(cur) {
-          return cur.getPercentage();
-        });
+      var allPerc = data.allItems.exp.map(function(cur) {
+        return cur.getPercentage();
+      });
 
-        return allPerc;
-    }
+      return allPerc;
+    },
 
     getBudget: function() {
       return {
@@ -148,7 +146,8 @@ var UIController = (function() {
     incomeLabel: '.budget__income--value',
     expensesLabel: '.budget__expenses--value',
     percentageLabel: '.budget__expenses--percentage',
-    container: '.container'
+    container: '.container',
+    expensesPercLabel: '.item__percentage'
   };
 
   return {
@@ -237,6 +236,10 @@ var UIController = (function() {
       });
 
       fieldsArr[0].focus();
+    },
+
+    displayPercentages: function(percent) {
+      var fields = document.querySelectorAll(DOMStrings.expensesPercLabel);
     },
 
     getDOMStrings: function() {
