@@ -150,6 +150,26 @@ var UIController = (function() {
     expensesPercLabel: '.item__percentage'
   };
 
+  var formatNumber = function(num, type) {
+    var numSplit;
+    // + or - before the number
+    // exactly 2 decimal points, comma for thousands
+
+    num = Math.abs(num);
+    num = num.toFixed(2);
+
+    numSplit = num.split('.');
+
+    int = numSplit[0];
+    if (int.length > 3) {
+      int.substr(0, int.length - 3) + ',' + int.substr(int.length - 3, 3);
+    }
+
+    dec = numSplit[1];
+
+    return (type === 'exp' ? '-' : '+') + ' ' + int + '.' + dec;
+  };
+
   return {
     getInput: function() {
       return {
@@ -176,7 +196,7 @@ var UIController = (function() {
       // replace the placeholder text with real data //
       newHtml = html.replace('%id%', obj.id);
       newHtml = newHtml.replace('%description%', obj.description);
-      newHtml = newHtml.replace('%value%', obj.value);
+      newHtml = newHtml.replace('%value%', formatNumber(obj.value, type));
 
       // Insert the html into the dom //
       document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
@@ -238,8 +258,22 @@ var UIController = (function() {
       fieldsArr[0].focus();
     },
 
-    displayPercentages: function(percent) {
+    displayPercentages: function(percentages) {
       var fields = document.querySelectorAll(DOMStrings.expensesPercLabel);
+
+      var nodeListForEach = function(list, callback) {
+        for (var i = 0; i < list.length; i++) {
+          callback(list[i], i);
+        }
+      };
+
+      nodeListForEach(fields, function(current, index) {
+        if (percentages[index] > 0) {
+          current.textContent = percentages[index] + '%';
+        } else {
+          current.textContent = '---';
+        }
+      });
     },
 
     getDOMStrings: function() {
@@ -285,7 +319,7 @@ var controller = (function(budgetCtrl, UICtrl) {
     var percentages = budgetCtrl.getPercentages();
 
     // 3. update the user interface //
-    console.log(percentages);
+    UICtrl.displayPercentages(percentages);
   };
 
   // add to UI//
